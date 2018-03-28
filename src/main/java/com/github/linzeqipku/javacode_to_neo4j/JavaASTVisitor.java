@@ -18,7 +18,6 @@ public class JavaASTVisitor extends ASTVisitor {
     private JavaProjectInfo javaProjectInfo;
     private String sourceContent;
     private BatchInserter inserter;
-    private int parsedClassCount=0;
 
     public JavaASTVisitor(JavaProjectInfo javaProjectInfo, String sourceContent, BatchInserter inserter) {
         this.javaProjectInfo = javaProjectInfo;
@@ -34,7 +33,8 @@ public class JavaASTVisitor extends ASTVisitor {
         MethodDeclaration[] methodDeclarations = node.getMethods();
         for (MethodDeclaration methodDeclaration : methodDeclarations) {
             JavaMethodInfo javaMethodInfo = createJavaMethodInfo(methodDeclaration, javaClassInfo.getFullName());
-            javaProjectInfo.addMethodInfo(javaMethodInfo);
+            if (javaMethodInfo!=null)
+                javaProjectInfo.addMethodInfo(javaMethodInfo);
         }
 
         FieldDeclaration[] fieldDeclarations = node.getFields();
@@ -43,7 +43,6 @@ public class JavaASTVisitor extends ASTVisitor {
             for (JavaFieldInfo javaFieldInfo : javaFieldInfos)
                 javaProjectInfo.addFieldInfo(javaFieldInfo);
         }
-        parsedClassCount++;
         System.out.println("Class "+javaClassInfo.getFullName()+" parsed. ("+javaClassInfo.getNodeId()+").");
         return false;
     }
@@ -64,6 +63,8 @@ public class JavaASTVisitor extends ASTVisitor {
 
     private JavaMethodInfo createJavaMethodInfo(MethodDeclaration node, String belongTo) {
         IMethodBinding methodBinding = node.resolveBinding();
+        if (methodBinding==null)
+            return null;
         String name = node.getName().getFullyQualifiedName();
         Type type = node.getReturnType2();
         String returnType = type == null ? "void" : type.toString();

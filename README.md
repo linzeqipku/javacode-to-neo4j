@@ -34,7 +34,7 @@ Add the maven dependence:
     <dependency>
         <groupId>com.github.linzeqipku</groupId>
         <artifactId>javacode-to-neo4j</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.1-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
